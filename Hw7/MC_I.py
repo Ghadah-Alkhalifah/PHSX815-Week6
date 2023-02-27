@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math as mt
-from scipy import integrate
+#from scipy import integrate
 import sys
+from sympy import *
+
+
 
 
 # Define the function to be integrated
@@ -41,16 +44,19 @@ def MCI(a, b, n, f, seed):
     return integralm
     
 
-# Analytic solution        
-def exac_f(a,b):
-    Analytic = integrate.quad(fun,a,b)
-    return Analytic
+
+# Analytical solution
+def exac_2(x,a,b):
+    
+    return integrate((sqrt(2*x)*exp(-x)),(x, a, b)).evalf(10)
+    
 
 # Integral limits
 a=0
 b=5
 n=100
 seed=33333
+x=symbols('x')
 
 # if the user includes the flag -h or --help print the options
 if '-h' in sys.argv or '--help' in sys.argv:
@@ -78,19 +84,20 @@ if '-seed' in sys.argv:
 trapzoid=trap(a,b,n,fun)
 gaussian=gaus_quad(a, b, n, fun)
 mc=MCI(a,b,n,fun, seed)
-exact=exac_f(a,b)
-erro_trap = abs(exact[0]- trapzoid)
-erro_gaus= abs(exact[0]- gaussian)
-erro_mc= abs(exact[0]- mc)
+exact2=exac_2(x,a,b)
+
+# compute errors
+erro_trap = abs(exact2- trapzoid)
+erro_gaus= abs(exact2- gaussian)
+erro_mc= abs(exact2- mc)
 
 # Print the results
+print('==========================================================================')
+print('Analytic Integral  Trapezoidal Integral  Gaussian Integral   Monte carlo')
 
-print()
-print('Analytic Integral  Trapezoidal Integral  Gaussian Integral Monte carlo')
-
-print("{:.8f}           {:.8f}           {:.8f}       {:.8f} ".format(exact[0], trapzoid, gaussian, mc))
-print('===========================================================')
-print('Trapezoidal Error  Gaussian Error  Monte carlo Error')
-print("{:.8f}            {:.8f}      {:0.8f}".format(erro_trap, erro_gaus, erro_mc ))
-print('===========================================================')
+print("{:.9f}           {:.9f}           {:.9f}       {:.9f} ".format(exact2, trapzoid, gaussian, mc))
+print('==========================================================================')
+print('Trapezoidal Error  Gaussian Error      Monte carlo Error')
+print("{:.9f}            {:.9f}         {:0.9f}".format(erro_trap, erro_gaus, erro_mc ))
+print('==========================================================================')
 
